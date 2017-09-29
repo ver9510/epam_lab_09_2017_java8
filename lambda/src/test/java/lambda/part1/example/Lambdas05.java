@@ -69,7 +69,7 @@ public class Lambdas05 {
 
     @Test
     public void callConflict() {
-//        conflict((DoSomething & Serializable) this::printAndReturn);
+        //conflict(this::printAndReturn);
     }
 
     private interface PersonFactory {
@@ -83,6 +83,5 @@ public class Lambdas05 {
     @Test
     public void factory() {
         withFactory(Person::new);
-        withFactory((firstName, lastName, age) -> new Person(firstName + "!", lastName + "!", age + 633));
     }
 }
