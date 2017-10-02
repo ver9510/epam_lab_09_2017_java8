@@ -34,7 +34,7 @@ public class Lambdas01Exercise {
         assertArrayEquals(persons, new Person[]{
                 new Person("name 3", "lastName 3", 20),
                 new Person("name 2", "lastName 1", 30),
-                new Person("name 1", "lastName 2", 40),
+                new Person("name 1", "lastName 2", 40)
         });
     }
 
