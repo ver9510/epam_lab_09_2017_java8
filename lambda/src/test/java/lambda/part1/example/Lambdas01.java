@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 // JSR-335 Lambda Expressions for the Java Programming Language
 
@@ -38,25 +39,28 @@ public class Lambdas01 {
             }
         });
 
-        assertArrayEquals(persons, new Person[]{
+        assertArrayEquals(new Person[]{
                 new Person("name 2", "lastName 1", 30),
                 new Person("name 1", "lastName 2", 40),
                 new Person("name 3", "lastName 3", 20)
-        });
+        }, persons);
     }
 
     @Test
     public void findFirstByName_foreach() {
+        //Initialize
         List<Person> persons = ImmutableList.of(
                 new Person("name 3", "lastName 3", 20),
                 new Person("name 1", "lastName 2", 40),
-                new Person("name 2", "lastName 1", 30)
+                new Person("name 2", "lastName 1", 30),
+                new Person("name 1", "lastName 3", 40)
         );
 
+        //Code
         Person person = null;
 
         for (Person p : persons) {
-            if (p.getFirstName().equals("name 1")) {
+            if ("name 1".equals(p.getFirstName())) {
                 person = p;
                 break;
             }
@@ -65,6 +69,10 @@ public class Lambdas01 {
         if (person != null) {
             person.print();
         }
+
+        //Asserts
+        assertNotNull(person);
+        assertEquals(new Person("name 1", "lastName 2", 40),person);
     }
 
     @Test
@@ -79,12 +87,14 @@ public class Lambdas01 {
                 FluentIterable.from(persons)
                         .firstMatch(new Predicate<Person>() {
                             public boolean apply(Person p) {
-                                return p.getFirstName().equals("name 1");
+                                return "name 1".equals(p.getFirstName());
                             }
                         });
 
         if (personOptional.isPresent()) {
             personOptional.get().print();
+            assertNotNull(personOptional.get());
+            assertEquals(new Person("name 1", "lastName 2", 40),personOptional.get());
         }
     }
 
