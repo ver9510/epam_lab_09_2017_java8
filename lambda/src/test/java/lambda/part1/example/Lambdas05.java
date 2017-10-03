@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 @SuppressWarnings("Convert2MethodRef")
 public class Lambdas05 {
+
     private <T> void printResult(T t, Function<T, String> f) {
         System.out.println(f.apply(t));
     }
@@ -19,7 +20,7 @@ public class Lambdas05 {
     public void printField() {
         printResult(person, Person::getLastName);
 
-//        BiFunction<Person, String, Person> changeFirstName = Person::withFirstName;
+//        BiFunction<Person, String, Person> changeFirstName = (p, fn) -> p.withFirstName(fn);
 
 //        printResult(changeFirstName.apply(person, "newName"), Person::getFirstName);
     }
@@ -70,6 +71,11 @@ public class Lambdas05 {
     @Test
     public void callConflict() {
         //conflict(this::printAndReturn);
+    }
+
+    @Test
+    public void serializeTree() {
+
     }
 
     private interface PersonFactory {

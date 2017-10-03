@@ -6,22 +6,36 @@ import org.junit.Test;
 @SuppressWarnings({"Convert2Lambda", "Anonymous2MethodRef"})
 public class Lambdas04 {
 
-    private void run(Runnable r) {
-        r.run();
+    private void runFromCurrentThread(Runnable runnable) {
+        runnable.run();
     }
 
     @Test
     public void closure() {
         Person person = new Person("John", "Galt", 33);
 
-        run(new Runnable() {
+        runFromCurrentThread(new Runnable() {
+
             @Override
             public void run() {
                 person.print();
             }
         });
+    }
 
-        //person = new Person("a", "a", 44);
+    static class AnonymousClazz implements Runnable {
+
+        private final Person person;
+
+        AnonymousClazz(Person person) {
+            this.person = person;
+        }
+
+
+        @Override
+        public void run() {
+            person.print();
+        }
     }
 
     @Test
@@ -29,13 +43,14 @@ public class Lambdas04 {
         Person person = new Person("John", "Galt", 33);
 
         // statement lambda
-        run(() -> {
+        runFromCurrentThread(() -> {
+            System.out.println("Before print");
             person.print();
         });
         // expression lambda
-        run(() -> person.print());
+        runFromCurrentThread(() -> person.print());
         // method reference
-        run(person::print);
+        runFromCurrentThread(person::print);
     }
 
     private Person _person = null;
@@ -48,11 +63,13 @@ public class Lambdas04 {
     public void closure_this_lambda() {
         _person = new Person("John", "Galt", 33);
 
-        run(() -> /*this.*/_person.print());
-        run(/*this.*/_person::print);
+        runFromCurrentThread(() -> this._person.print()); // GC Problems
+        runFromCurrentThread(/*this.*/_person::print);
 
         _person = new Person("a", "a", 1);
 
+        runFromCurrentThread(() -> /*this.*/_person.print()); // GC Problems
+        runFromCurrentThread(/*this.*/_person::print);
     }
 
 
@@ -68,15 +85,14 @@ public class Lambdas04 {
     public void closure_this_lambda2() {
         _person = new Person("John", "Galt", 33);
 
-        //final Person person = _person;
-        final Runnable r1 = runLater(() -> _person.print());
-        final Runnable r2 = runLater(get_person()::print);
+        Runnable r1 = runLater(() -> _person.print());
+        Runnable r2 = runLater(_person::print);
+//        Runnable r3 = runLater(get_person()::print);
 
         _person = new Person("a", "a", 1);
 
         r1.run();
         r2.run();
-
+//        r3.run();
     }
-
 }
