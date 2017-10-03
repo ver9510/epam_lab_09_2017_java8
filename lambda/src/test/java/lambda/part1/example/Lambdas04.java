@@ -23,11 +23,11 @@ public class Lambdas04 {
         });
     }
 
-    static class AnonymousClazz implements Runnable {
+    static class AnonymousLike implements Runnable {
 
         private final Person person;
 
-        AnonymousClazz(Person person) {
+        AnonymousLike(Person person) {
             this.person = person;
         }
 
@@ -87,12 +87,12 @@ public class Lambdas04 {
 
         Runnable r1 = runLater(() -> _person.print());
         Runnable r2 = runLater(_person::print);
-//        Runnable r3 = runLater(get_person()::print);
+        Runnable r3 = runLater(get_person()::print);
 
         _person = new Person("a", "a", 1);
 
         r1.run();
         r2.run();
-//        r3.run();
+        r3.run();
     }
 }

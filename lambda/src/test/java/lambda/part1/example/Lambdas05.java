@@ -19,15 +19,12 @@ public class Lambdas05 {
     @Test
     public void printField() {
         printResult(person, Person::getLastName);
-
-//        BiFunction<Person, String, Person> changeFirstName = (p, fn) -> p.withFirstName(fn);
-
-//        printResult(changeFirstName.apply(person, "newName"), Person::getFirstName);
     }
 
 
     private static class PersonHelper {
-        public static String stringRepresentation(Person person) {
+
+        static String stringRepresentation(Person person) {
             return person.toString();
         }
     }
