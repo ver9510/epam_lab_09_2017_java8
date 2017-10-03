@@ -7,26 +7,31 @@ import java.io.Serializable;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-@SuppressWarnings("Convert2MethodRef")
 public class Lambdas05 {
-    private <T> void printResult(T t, Function<T, String> f) {
-        System.out.println(f.apply(t));
+
+    private <T> void printResult(T t, Function<T, String> function) {
+        String lastName = function.apply(t);
+
+
+        System.out.println(lastName);
     }
 
     private final Person person = new Person("John", "Galt", 33);
 
     @Test
     public void printField() {
-        printResult(person, Person::getLastName);
-
-//        BiFunction<Person, String, Person> changeFirstName = Person::withFirstName;
-
-//        printResult(changeFirstName.apply(person, "newName"), Person::getFirstName);
+        printResult(person, new Function<Person, String>() {
+            @Override
+            public String apply(Person person) {
+                return person.getLastName();
+            }
+        });
     }
 
 
     private static class PersonHelper {
-        public static String stringRepresentation(Person person) {
+
+        static String stringRepresentation(Person person) {
             return person.toString();
         }
     }
@@ -70,6 +75,11 @@ public class Lambdas05 {
     @Test
     public void callConflict() {
         //conflict(this::printAndReturn);
+    }
+
+    @Test
+    public void serializeTree() {
+
     }
 
     private interface PersonFactory {

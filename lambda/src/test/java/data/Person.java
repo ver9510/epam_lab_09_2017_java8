@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Objects;
+
 public class Person {
     private final String firstName;
     private final String lastName;
@@ -19,15 +21,19 @@ public class Person {
         return firstName;
     }
 
-    public String getLastName() {
+    public String getLastName(Person this) {
         return lastName;
+    }
+
+    public static String getLastNameStatic(Person person) {
+        return person.getLastName();
     }
 
     public static String getLastName2(Person person) {
         return person.getLastName();
     }
 
-    public int getAge() {
+    public int getAge(Person this) {
         return age;
     }
 
@@ -48,35 +54,26 @@ public class Person {
     }
 
     @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("firstName", firstName)
-                .append("lastName", lastName)
-                .append("age", age)
-                .toString();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         Person person = (Person) o;
-
-        return new EqualsBuilder()
-                .append(age, person.age)
-                .append(firstName, person.firstName)
-                .append(lastName, person.lastName)
-                .isEquals();
+        return age == person.age &&
+                Objects.equals(firstName, person.firstName) &&
+                Objects.equals(lastName, person.lastName);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(firstName)
-                .append(lastName)
-                .append(age)
-                .toHashCode();
+        return Objects.hash(firstName, lastName, age);
+    }
+
+    @Override
+    public String toString() {
+        return "Person" + hashCode() + ":{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", age=" + age +
+                '}';
     }
 }
