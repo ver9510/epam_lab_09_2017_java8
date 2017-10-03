@@ -21,15 +21,19 @@ public class Person {
         return firstName;
     }
 
-    public String getLastName() {
+    public String getLastName(Person this) {
         return lastName;
+    }
+
+    public static String getLastNameStatic(Person person) {
+        return person.getLastName();
     }
 
     public static String getLastName2(Person person) {
         return person.getLastName();
     }
 
-    public int getAge() {
+    public int getAge(Person this) {
         return age;
     }
 
