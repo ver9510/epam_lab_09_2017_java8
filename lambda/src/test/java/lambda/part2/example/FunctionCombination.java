@@ -4,9 +4,7 @@ import data.Person;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -138,26 +136,59 @@ public class FunctionCombination {
 
         listNumbers.add(null);
 
-        while (true) {
-            try {
-                Integer a = new Integer(300);
-                TimeUnit.MILLISECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
-            if (false) {
-                break;
-            }
-        }
+
+        List<? super Number> listSuperNumbers = new ArrayList<Object>();
+        listSuperNumbers.add(1);
+        listSuperNumbers.add(1L);
+        listSuperNumbers.add(1d);
+        listSuperNumbers.add(1f);
+        listSuperNumbers.add((short)1);
+
+        Object obj = listSuperNumbers.get(0);
+
+        // Producer
+        // Extends
+        // Consumer
+        // Super
 
 
         // Array generics
         // Raw types list (Int -> Double)
 
         assertEquals(5, lastNameLength.apply(new Person("a", "abcde", 0)).intValue());
+
+        List<Number> intList = Arrays.asList(1, 23, 4);
+        Comparator<Integer> intComparator = Integer::compareTo;
+        Comparator<Object> objectComparator = (o1, o2) -> 0;
+
+        Number[] numberArray = new Integer[10];
+
+        List<String> first = new ArrayList<>(Arrays.asList("1", "2"));
+        List<String> second = new ArrayList<>(Arrays.asList("a", "b"));
+        varArgsMethod(first, second);
     }
 
+
+    public static void varArgsMethod(List<String>...lists) {
+        Object[] objects = lists;
+        objects[0] = new ArrayList<>(Arrays.asList(100, 200, 300));
+
+        Object str = (Object)lists[0].get(0);
+        System.out.println(str);
+    }
+
+    public static Integer findMaxInt(List<Integer> list, Comparator<Integer> comparator) {
+        return null;
+    }
+
+    public static String findMaxString(List<String> list, Comparator<String> comparator) {
+        return null;
+    }
+
+    public static <T> T findMax(List<? extends T> list, Comparator<? super T> comparator) {
+        return null;
+    }
 
     class MyException extends RuntimeException {
 
