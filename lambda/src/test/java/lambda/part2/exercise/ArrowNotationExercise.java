@@ -32,7 +32,7 @@ public class ArrowNotationExercise {
     // getFullName: Person -> String
 
     // TODO
-    // ageOfPersonWithTheLongestFullName: (Person -> String) -> (Person, Person) -> int
+    // ageOfPersonWithTheLongestFullName: (Person -> String) -> ((Person, Person) -> int)
     //
 
     @Test
