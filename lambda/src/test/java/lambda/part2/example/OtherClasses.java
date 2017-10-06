@@ -145,27 +145,30 @@ public class OtherClasses {
         ObjIntConsumer<String> checkLength = null;
     }
 
+    @FunctionalInterface
     private interface PersonFactory {
+
+        // (String, String, int) -> Person
         Person create(String name, String lastName, int age);
     }
 
-    // ((String, String, int) -> Person, String) -> (String, Int) -> Person
-    private BiFunction<String, Integer, Person> partiallyApply(PersonFactory pf, String lastName) {
-        return (name, age) -> pf.create(name, lastName, age);
-    }
 
     // ((String, String, int) -> Person) -> String -> String -> Int -> Person
     private Function<String, Function<String, IntFunction<Person>>> curry(PersonFactory pf) {
         return name -> lastName -> age -> pf.create(name, lastName, age);
     }
 
+    // (((String, String, int) -> Person), String) -> (String, Int) -> Person
+    private BiFunction<String, Integer, Person> partiallyApply(PersonFactory pf, String lastName) {
+        return (name, age) -> pf.create(name, lastName, age);
+    }
+
     public void currying() {
         // (String, String, int) -> Person
-        PersonFactory factory = (n, ln, a) -> new Person(n, ln, a);
+        PersonFactory factory = Person::new;
 
-
-        BiFunction<String, Integer, Person> doe = (name, age) -> factory.create(name, "Doe", age);
-        BiFunction<String, Integer, Person> doeByPartiallyApply = partiallyApply(factory, "Doe");
+        BiFunction<String, Integer, Person> doe = (name, age) -> factory.create(name, "Vasilyev", age);
+        BiFunction<String, Integer, Person> doeByPartiallyApply = partiallyApply(factory, "Vasilyev");
 
         Person mother = doe.apply("Samanta", 33);
         Person father = doe.apply("Bob", 35);
@@ -174,7 +177,7 @@ public class OtherClasses {
         // String -> String -> int -> Person
         Function<String, Function<String, IntFunction<Person>>> curried = name -> lastName -> age -> factory.create(name, lastName, age);
         Function<String, IntFunction<Person>> john = curried.apply("John");
-        IntFunction<Person> johnDoeWithoutAge = john.apply("Doe");
+        IntFunction<Person> johnDoeWithoutAge = john.apply("Vasilyev");
 
         assertEquals(new Person("John", "Doe", 22), johnDoeWithoutAge.apply(22));
         assertEquals(new Person("John", "Doe", 33), johnDoeWithoutAge.apply(33));

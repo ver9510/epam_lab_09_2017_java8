@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import static org.junit.Assert.assertEquals;
 
 public class Filtering {
+
     @Test
     public void filtering0() {
         final List<Employee> employees =
@@ -46,10 +47,19 @@ public class Filtering {
 
         // Johns with dev experience worked in epam more then 1 year
 
-        final List<Employee> result = new ArrayList<>();
+        List<Employee> result = new ArrayList<>();
         for (Employee employee : employees) {
-            final boolean isJohn = employee.getPerson().getFirstName().equals("John");
-
+            boolean isJohn = employee.getPerson().getFirstName().equals("John");
+            boolean workedMoreThanYearInEpam = false;
+            for (JobHistoryEntry jobHistoryEntry : employee.getJobHistory()) {
+                if ("epam".equals(jobHistoryEntry.getEmployer()) && jobHistoryEntry.getDuration() > 1) {
+                    workedMoreThanYearInEpam = true;
+                    break;
+                }
+            }
+            if (isJohn && workedMoreThanYearInEpam) {
+                result.add(employee);
+            }
         }
     }
 
@@ -65,7 +75,7 @@ public class Filtering {
             return list;
         }
 
-        // [T] -> (T -> boolean) -> [T]
+        // [T], (T -> boolean) -> [T]
         private FilterUtil<T> filter(Predicate<T> condition) {
             final List<T> res = new ArrayList<T>();
             for (T t : list) {
