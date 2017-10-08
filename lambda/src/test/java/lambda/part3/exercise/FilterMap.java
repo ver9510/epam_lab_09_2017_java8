@@ -1,4 +1,4 @@
-package part3.exercise;
+package lambda.part3.exercise;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,9 @@ public class FilterMap {
     }
 
     public static class LazyCollectionHelper<T> {
+
         private final List<Container<Object, Object>> actions;
+
         private final List<T> list;
 
         public LazyCollectionHelper(List<T> list, List<Container<Object, Object>> actions) {
