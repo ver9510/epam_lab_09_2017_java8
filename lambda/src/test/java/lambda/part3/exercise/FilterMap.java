@@ -2,9 +2,7 @@ package lambda.part3.exercise;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -51,25 +49,55 @@ public class FilterMap {
             this(list, new ArrayList<>());
         }
 
-        public LazyCollectionHelper<T> filter(Predicate<T> condition) {
-            // TODO
-            throw new UnsupportedOperationException();
+        public LazyCollectionHelper<T> filter(Predicate<? super T> condition) {
+            List<Container<Object, Object>> actions = new ArrayList<>(this.actions);
+            actions.add(new Container<>((Predicate<Object>) condition));
+            return new LazyCollectionHelper<T>(list, actions);
         }
 
-        public <R> LazyCollectionHelper<R> map(Function<T, R> function) {
-            // TODO
-            throw new UnsupportedOperationException();
+        public <R> LazyCollectionHelper<R> map(Function<? super T, ? extends R> function) {
+            List<Container<Object, Object>> actions = new ArrayList<>(this.actions);
+            actions.add(new Container<>((Function<Object, Object>) function));
+            return new LazyCollectionHelper<>((List<R>)list, actions);
         }
 
         public List<T> force() {
-            // TODO
-            throw new UnsupportedOperationException();
+            if (actions.isEmpty()) {
+                return new ArrayList<>(list);
+            }
+
+            List<T> result = new ArrayList<>();
+            nextValue: for (Object value : list) {
+                for (Container<Object, Object> action : actions) {
+                    Predicate<Object> predicate = action.getPredicate();
+                    if (predicate != null) {
+                        if (!predicate.test(value)) {
+                            continue nextValue;
+                        }
+                    } else {
+                        Function<Object, Object> function = action.getFunction();
+                        value = function.apply(value);
+                    }
+                }
+                result.add((T) value);
+            }
+
+            return result;
         }
     }
 
     @Test
     public void test() {
         List<Integer> integers = Arrays.asList(1, 2, 100, 110, 200, 300, 500);
+
+
+//        LazyCollectionHelper<Integer> lazy = new LazyCollectionHelper<>(integers);
+//        LazyCollectionHelper<Integer> lazy2 = lazy.filter(val -> val != 0);
+//        LazyCollectionHelper<Integer> lazy3 = lazy2.filter(val -> val < 0);
+//        LazyCollectionHelper<Double> lazy4 = lazy3.map(Double::valueOf);
+//
+//        List<Double> lazyResult = lazy4.force();
+
 
         List<String> result = new LazyCollectionHelper<>(integers).filter(val -> val > 10)
                                                                   .filter(val -> val < 400)
