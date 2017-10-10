@@ -46,9 +46,8 @@ public class FilterMap {
         }
 
         public LazyCollectionHelper<T> filter(Predicate<T> condition) {
-            List<Container<Object, Object>> newActions = new ArrayList<>(actions);
-            newActions.add(new Container<>((Predicate<Object>) condition));
-            return new LazyCollectionHelper<>(list, newActions);
+            // TODO
+            throw new UnsupportedOperationException();
         }
 
         public <R> LazyCollectionHelper<R> map(Function<T, R> function) {
