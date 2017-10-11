@@ -5,18 +5,19 @@ import org.junit.Test;
 
 import java.util.function.Predicate;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FunctionCombinationExercise {
 
     @Test
     public void personHasNotEmptyLastNameAndFirstName0() {
         // Person -> boolean
-        final Predicate<Person> validate = p -> !p.getFirstName().isEmpty() && !p.getLastName().isEmpty();
+        Predicate<Person> validate = p -> !p.getFirstName().isEmpty() && !p.getLastName().isEmpty();
 
-        assertEquals(true, validate.test(new Person("a", "b", 0)));
-        assertEquals(false, validate.test(new Person("", "b", 0)));
-        assertEquals(false, validate.test(new Person("a", "", 0)));
+        assertTrue(validate.test(new Person("a", "b", 0)));
+        assertFalse(validate.test(new Person("", "b", 0)));
+        assertFalse(validate.test(new Person("a", "", 0)));
     }
 
     // TODO
@@ -39,17 +40,17 @@ public class FunctionCombinationExercise {
 
     @Test
     public void personHasNotEmptyLastNameAndFirstName1() {
-        final Predicate<Person> hasEmptyFirstName = p -> p.getFirstName().isEmpty();
-        final Predicate<Person> hasEmptyLastName = p -> p.getLastName().isEmpty();
+        Predicate<Person> hasEmptyFirstName = p -> p.getFirstName().isEmpty();
+        Predicate<Person> hasEmptyLastName = p -> p.getLastName().isEmpty();
 
-        final Predicate<Person> validateFirstName = negate1(hasEmptyFirstName);
-        final Predicate<Person> validateLastName = negate1(hasEmptyLastName);
+        Predicate<Person> validateFirstName = negate1(hasEmptyFirstName);
+        Predicate<Person> validateLastName = negate1(hasEmptyLastName);
 
-        final Predicate<Person> validate = validateFirstNameAndLastName(validateFirstName, validateLastName);
+        Predicate<Person> validate = validateFirstNameAndLastName(validateFirstName, validateLastName);
 
-        assertEquals(true, validate.test(new Person("a", "b", 0)));
-        assertEquals(false, validate.test(new Person("", "b", 0)));
-        assertEquals(false, validate.test(new Person("a", "", 0)));
+        assertTrue(validate.test(new Person("a", "b", 0)));
+        assertFalse(validate.test(new Person("", "b", 0)));
+        assertFalse(validate.test(new Person("a", "", 0)));
     }
 
     // TODO
@@ -68,32 +69,32 @@ public class FunctionCombinationExercise {
 
     @Test
     public void personHasNotEmptyLastNameAndFirstName2() {
-        final Predicate<Person> hasEmptyFirstName = p -> p.getFirstName().isEmpty();
-        final Predicate<Person> hasEmptyLastName = p -> p.getLastName().isEmpty();
+        Predicate<Person> hasEmptyFirstName = p -> p.getFirstName().isEmpty();
+        Predicate<Person> hasEmptyLastName = p -> p.getLastName().isEmpty();
 
-        final Predicate<Person> validateFirstName = null; // TODO use negate
-        final Predicate<Person> validateLastName = null; // TODO use negate
+        Predicate<Person> validateFirstName = null; // TODO use negate
+        Predicate<Person> validateLastName = null; // TODO use negate
 
-        final Predicate<Person> validate = null; // TODO use and
+        Predicate<Person> validate = null; // TODO use and
 
-        assertEquals(true, validate.test(new Person("a", "b", 0)));
-        assertEquals(false, validate.test(new Person("", "b", 0)));
-        assertEquals(false, validate.test(new Person("a", "", 0)));
+        assertTrue(validate.test(new Person("a", "b", 0)));
+        assertFalse(validate.test(new Person("", "b", 0)));
+        assertFalse(validate.test(new Person("a", "", 0)));
     }
 
     @Test
     public void personHasNotEmptyLastNameAndFirstName3() {
-        final Predicate<Person> hasEmptyFirstName = p -> p.getFirstName().isEmpty();
-        final Predicate<Person> hasEmptyLastName = p -> p.getLastName().isEmpty();
+        Predicate<Person> hasEmptyFirstName = p -> p.getFirstName().isEmpty();
+        Predicate<Person> hasEmptyLastName = p -> p.getLastName().isEmpty();
 
-        final Predicate<Person> validateFirstName = null; // TODO use Predicate::negate
-        final Predicate<Person> validateLastName = null; // TODO use Predicate::negate
+        Predicate<Person> validateFirstName = null; // TODO use Predicate->negate
+        Predicate<Person> validateLastName = null; // TODO use Predicate->negate
 
-        final Predicate<Person> validate = null; // TODO use Predicate::and
+        Predicate<Person> validate = null; // TODO use Predicate->and
 
-        assertEquals(true, validate.test(new Person("a", "b", 0)));
-        assertEquals(false, validate.test(new Person("", "b", 0)));
-        assertEquals(false, validate.test(new Person("a", "", 0)));
+        assertTrue(validate.test(new Person("a", "b", 0)));
+        assertFalse(validate.test(new Person("", "b", 0)));
+        assertFalse(validate.test(new Person("a", "", 0)));
     }
 
 }
