@@ -180,11 +180,11 @@ public class StreamsExercise2 {
     public void greatestExperiencePerEmployer() {
         Map<String, Person> result = null;// TODO
 
-        Map<String, Set<Person>> expected = new HashMap<>();
-        expected.put("epam", Collections.singleton(new Person("John", "White", 28)));
-        expected.put("google", Collections.singleton(new Person("John", "Galt", 29)));
-        expected.put("yandex", Collections.singleton(new Person("John", "Doe", 30)));
-        expected.put("abc", Collections.singleton(new Person("John", "Doe", 30)));
+        Map<String, Person> expected = new HashMap<>();
+        expected.put("epam", new Person("John", "White", 28));
+        expected.put("google", new Person("John", "Galt", 29));
+        expected.put("yandex", new Person("John", "Doe", 30));
+        expected.put("abc", new Person("John", "Doe", 30));
         assertEquals(expected, result);
     }
 
