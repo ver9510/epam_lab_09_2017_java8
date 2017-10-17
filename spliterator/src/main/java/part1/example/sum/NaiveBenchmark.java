@@ -1,5 +1,6 @@
 package part1.example.sum;
 
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 public class NaiveBenchmark {
@@ -8,7 +9,7 @@ public class NaiveBenchmark {
         long startSimple = System.nanoTime();
         long resultSimple = sumTwice(10_000_000);
         long endSimple = System.nanoTime();
-        System.out.printf("Simple: %d; time=%8.3fms%n", resultSimple, (endSimple - startSimple) / 1_000_000.0);
+        System.out.printf("Simple: %d; time=%8.3fms%n", resultSimple, (double)TimeUnit.NANOSECONDS.toMillis(endSimple - startSimple));
 
         long startStream = System.nanoTime();
         long resultStream = sumTwiceStream(10_000_000);
