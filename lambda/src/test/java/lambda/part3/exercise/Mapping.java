@@ -110,9 +110,11 @@ public class Mapping {
         }
 
         public <U> LazyFlatMapHelper<T, U> flatMap(Function<R, List<U>> remapper) {
-            return new LazyFlatMapHelper<>(list, mapper.andThen(result -> result.stream()
-                                                                                .flatMap(element -> remapper.apply(element).stream())
-                                                                                .collect(Collectors.toList())));
+            return new LazyFlatMapHelper<>(list, mapper.andThen(resultR -> {
+                List<U> result = new ArrayList<>(resultR.size());
+                resultR.forEach(element -> result.addAll(remapper.apply(element)));
+                return result;
+            }));
         }
 
         public List<R> force() {

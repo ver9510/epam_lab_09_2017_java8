@@ -7,7 +7,7 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
     private final int[][] array;
 
-    private RectangleSpliterator(int[][] array) {
+    public RectangleSpliterator(int[][] array) {
         super(-1, 0);       // TODO заменить
 //       super(estimatedSize, Spliterator.IMMUTABLE
 //                          | Spliterator.ORDERED
