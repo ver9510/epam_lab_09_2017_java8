@@ -18,11 +18,11 @@ public class StreamsExample {
     @Test
     public void checkJohnsLastNames() {
         List<String> johnsLastNames = getEmployees().stream()
-                                                    .map(Employee::getPerson)
-                                                    .filter(e -> e.getFirstName().equals("John"))
-                                                    .map(Person::getLastName)
-                                                    .distinct()
-                                                    .collect(toList());
+                .map(Employee::getPerson)
+                .filter(e -> e.getFirstName().equals("John"))
+                .map(Person::getLastName)
+                .distinct()
+                .collect(toList());
 
         assertEquals(Collections.singletonList("Galt"), johnsLastNames);
     }
@@ -31,18 +31,18 @@ public class StreamsExample {
     public void operations() {
         Optional<JobHistoryEntry> jobHistoryEntry =
                 getEmployees().stream()
-                              .filter(e -> e.getPerson().getFirstName().equals("John"))
-                              .map(Employee::getJobHistory)
-                              .flatMap(Collection::stream)
-                              .peek(System.out::println)
-                              .distinct()
-                              .sorted(comparing(JobHistoryEntry::getDuration))
-                              .skip(1) // long
-                              .limit(10) // long
-                              .unordered()
-                              .parallel()
-                              .sequential()
-                              .findAny();
+                        .filter(e -> e.getPerson().getFirstName().equals("John"))
+                        .map(Employee::getJobHistory)
+                        .flatMap(Collection::stream)
+                        .peek(System.out::println)
+                        .distinct()
+                        .sorted(comparing(JobHistoryEntry::getDuration))
+                        .skip(1) // long
+                        .limit(10) // long
+                        .unordered()
+                        .parallel()
+                        .sequential()
+                        .findAny();
         //      .allMatch(Predicate<T>)
         //      .anyMatch(Predicate<T>)
         //      .noneMatch(Predicate<T>)
@@ -73,19 +73,20 @@ public class StreamsExample {
     }
 
     @Test
-    public void checkAgedJohnsExpiriences() {
+    public void checkAgedJohnsExperiences() {
         List<Employee> employees = getEmployees();
 
         // Every aged (>= 25) John has an odd "dev" job experience
 
         employees.stream()
-                 .filter(e -> e.getPerson().getFirstName().equals("John"))
-                 .filter(e -> e.getPerson().getAge() >= 25)
-                 .flatMap(e -> e.getJobHistory().stream())
-                 .filter(e -> e.getPosition().equals("dev"))
-                 .distinct()
-                 .sorted(comparing(JobHistoryEntry::getDuration))
-                 .forEachOrdered(System.out::println);
+                .filter(e -> e.getPerson().getFirstName().equals("John"))
+                .filter(e -> e.getPerson().getAge() >= 25)
+                .flatMap(e -> e.getJobHistory().stream())
+                .filter(e -> e.getPosition().equals("dev"))
+                .filter(e -> (e.getDuration() % 2 != 0))
+                .distinct()
+                .sorted(Comparator.comparingInt(JobHistoryEntry::getDuration))
+                .forEachOrdered(System.out::println);
     }
 
     @Test
@@ -105,9 +106,9 @@ public class StreamsExample {
 
     private static Stream<PersonPositionPair> employeeToPairs(Employee employee) {
         return employee.getJobHistory()
-                       .stream()
-                       .map(JobHistoryEntry::getPosition)
-                       .map(p -> new PersonPositionPair(employee.getPerson(), p));
+                .stream()
+                .map(JobHistoryEntry::getPosition)
+                .map(position -> new PersonPositionPair(employee.getPerson(), position));
     }
 
     // [ (John, [dev, QA]), (Bob, [QA, QA])] -> [dev -> [John], QA -> [John, Bob]]
@@ -115,8 +116,9 @@ public class StreamsExample {
     private Map<String, Set<Person>> getPositionIndex(List<Employee> employees) {
         Stream<PersonPositionPair> personPositionPairStream = employees.stream().flatMap(StreamsExample::employeeToPairs);
 
-        //personPositionPairStream
-        //        .reduce(Collections.EMPTY_MAP, StreamsExample::addToMap, StreamsExample::combineMaps);
+        //Reduce with seeds
+/*        return personPositionPairStream
+                .reduce(Collections.emptyMap(), StreamsExample::addToMap, StreamsExample::combineMaps);*/
 
 //        return personPositionPairStream
 //                .collect(
@@ -131,31 +133,42 @@ public class StreamsExample {
 //                                set.addAll(entry.getValue());
 //                            }
 //                        });
-        return personPositionPairStream.collect(
+          return personPositionPairStream.collect(
                 Collectors.groupingBy(PersonPositionPair::getPosition, mapping(PersonPositionPair::getPerson, toSet())));
 
     }
 
-/*    private static Map<String, Set<Person>> combineMaps(Map<String, Set<Person>> u1,
+    private static Map<String, Set<Person>> combineMaps(Map<String, Set<Person>> u1,
                                                         Map<String, Set<Person>> u2) {
         final HashMap<String, Set<Person>> result = new HashMap<>();
         result.putAll(u1);
         for (Map.Entry<String, Set<Person>> entry : u2.entrySet()) {
             Set<Person> set = result.computeIfAbsent(entry.getKey(), (k) -> new HashSet<>());
             set.addAll(entry.getValue());
+
+            result.merge(entry.getKey(),entry.getValue(),(people, people2) -> {people.addAll(people2);return people;});
         }
+
+
         return result;
     }
 
     private static Map<String, Set<Person>> addToMap(
-            Map<String, Set<Person>> u,
-            PersonPositionPair personPositionPair) {
-        final HashMap<String, Set<Person>> result = new HashMap<>();
-        result.putAll(u);
-        Set<Person> set = result.computeIfAbsent(personPositionPair.getPosition(), (k) -> new HashSet<>());
-        set.add(personPositionPair.getPerson());
+            Map<String, Set<Person>> origin,
+            PersonPositionPair pair) {
+        final HashMap<String, Set<Person>> result = new HashMap<>(origin);
+        Set<Person> set = result.computeIfAbsent(pair.getPosition(), (k) -> new HashSet<>());
+        set.add(pair.getPerson());
+
+        HashSet<Person> newSet = new HashSet<>();
+        newSet.add(pair.getPerson());
+        origin.merge(pair.getPosition(), newSet, (oldValue, newValue) -> {
+            oldValue.add(pair.getPerson());
+            return oldValue;
+        });
+
         return result;
-    }*/
+    }
 
 
     @Test
