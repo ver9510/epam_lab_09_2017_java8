@@ -8,13 +8,19 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     private final int[][] array;
 
     public RectangleSpliterator(int[][] array) {
-        super(-1, 0);       // TODO заменить
+        super(checkArrayAndCalcEstimatedSize(array), 0);       // TODO заменить
 //       super(estimatedSize, Spliterator.IMMUTABLE
 //                          | Spliterator.ORDERED
 //                          | Spliterator.SIZED
 //                          | Spliterator.SUBSIZED
 //                          | Spliterator.NONNULL);
         this.array = array;
+    }
+
+    private static long checkArrayAndCalcEstimatedSize(int[][] array) {
+        // TODO
+
+        return array.length * array[0].length;
     }
 
     @Override
