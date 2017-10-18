@@ -25,7 +25,7 @@ public class FunctionCombinationExercise {
     private Predicate<Person> negate1(Predicate<Person> test) {
         return p -> {
             // TODO
-            return test.negate().test(p);
+            return !test.test(p);
             //throw new UnsupportedOperationException();
         };
     }
@@ -36,7 +36,7 @@ public class FunctionCombinationExercise {
         return p -> {
             // TODO
             //throw new UnsupportedOperationException();
-            return t1.and(t2::test).test(p);
+            return t1.test(p)&&t2.test(p);
         };
     }
 
@@ -60,7 +60,7 @@ public class FunctionCombinationExercise {
     private <T> Predicate<T> negate(Predicate<T> test) {
         // TODO
         //throw new UnsupportedOperationException();
-        return t->test.negate().test(t);
+        return t->!test.test(t);
     }
 
     // TODO
@@ -68,7 +68,7 @@ public class FunctionCombinationExercise {
     private <T> Predicate<T> and(Predicate<T> t1, Predicate<T> t2) {
         // TODO
         //throw new UnsupportedOperationException();
-        return t->t1.and(t2::test).test(t);
+        return t->t1.test(t)&&t2.test(t);
     }
 
     @Test

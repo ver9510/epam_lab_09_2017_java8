@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -153,14 +154,40 @@ public class Mapping {
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> f) {
             // TODO
             //throw new UnsupportedOperationException();
-            Function<T,R2> funcT2 = t-> {
+            Function<T, R2> funcT2 = t -> {
                 return f.apply(function.apply(t));
             };
-            return new LazyMapHelper<T,R2>(list,funcT2);
+            return new LazyMapHelper<>(list, funcT2);
         }
     }
 
-    // TODO * LazyFlatMapHelper
+/* Done at lesson 17.10
+    private static class LazyFlatMapHelper<T, R> {
+        private final List<T> list;
+        private final Function<T, List<R>> mapper;
+
+        public LazyFlatMapHelper(List<T> list, Function<T, List<R>> mapper) {
+            this.list = list;
+            this.mapper = mapper;
+        }
+
+        public static <T> LazyFlatMapHelper<T, T> from(List<T> list) {
+            return new LazyFlatMapHelper<>(list, t -> Collections.singletonList(t));
+        }
+
+        public <U> LazyFlatMapHelper<T, U> flatMap(Function<R, List<U>> remapper) {
+            return new LazyFlatMapHelper<>(list, mapper.andThen(result -> result.stream()
+                    .flatMap(element -> remapper.apply(element).stream())
+                    .collect(Collectors.toList())));
+        }
+
+        public List<R> force() {
+            ArrayList<R> result = new ArrayList<>();
+            list.stream().map(value ->mapper.apply(value));
+            return result;
+        }
+    }
+    */
 
     @Test
     public void lazyMapping() {
