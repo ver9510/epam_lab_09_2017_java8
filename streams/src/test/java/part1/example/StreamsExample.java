@@ -196,7 +196,7 @@ public class StreamsExample {
 
 
         return result;
-    }*/
+    }
 
 
     @Test
