@@ -229,18 +229,11 @@ public class StreamsExercise2 {
     @Test
     public void greatestExperiencePerEmployer() {
         Map<String, Person> result = null;// TODO
-/*        Stream<PersonCompanyPair> pairPersonCompanyStream = getEmployees().stream()
-                .map(employee -> employee.getJobHistory()
-                        .stream()
-                        .filter(job -> job.equals(employee.getJobHistory()
-                                .stream()
-                                .max((o1, o2) -> Integer.compare(o1.getDuration(), o2.getDuration())).get()));*/
-//
-Stream<JobHistoryEntry> jobsStream = getEmployees().stream().flatMap(employee->employee.getJobHistory().stream());
-List<JobHistoryEntry> jobList = jobsStream.collect(Collectors.toList());
-        JobHistoryEntry personWithMaxExperience = jobsStream.max((o1, o2) -> o1.getEmployer().equals(o2.getEmployer())&&Integer.compare(o1.getDuration(),o2.getDuration())).get();
-        //List<PersonCompanyPair> list = pairPersonCompanyStream.collect(Collectors.toList());
-        //result = pairPersonCompanyStream.collect(Collectors.toMap(PersonCompanyPair::getCompany, PersonCompanyPair::getPerson));
+        Stream<JobHistoryEntry> jobStream = getEmployees().stream().flatMap(employee->employee.getJobHistory().stream());
+        //List<JobHistoryEntry> jobList = jobStream.collect(Collectors.toList());
+        Map<String,Integer> jobs = jobStream.collect(Collectors.toMap(JobHistoryEntry::getEmployer,JobHistoryEntry::getDuration, Integer::compare));
+
+
         Map<String, Person> expected = new HashMap<>();
         expected.put("epam", new Person("John", "White", 28));
         expected.put("google", new Person("John", "Galt", 29));

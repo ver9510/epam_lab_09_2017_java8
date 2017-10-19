@@ -96,3 +96,30 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
         return false;
     }
 }
+
+
+class A {
+
+    protected String val;
+
+    A() {
+        setVal();
+    }
+
+    public void setVal() {
+        val = "A";
+    }
+}
+
+class B extends A {
+
+    @Override
+    public void setVal() {
+        val = "B";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new B().val);
+
+    }
+}

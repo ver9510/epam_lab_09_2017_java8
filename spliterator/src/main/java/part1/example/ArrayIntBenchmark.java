@@ -27,7 +27,7 @@ public class ArrayIntBenchmark {
 
 
     @Benchmark
-    public long baiselineSeq() {
+    public long baselineSequential() {
         return Arrays.stream(array)
                      .sequential()
                      .asLongStream()
