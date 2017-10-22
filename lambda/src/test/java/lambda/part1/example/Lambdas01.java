@@ -34,8 +34,6 @@ public class Lambdas01 {
         };
 
         Arrays.sort(persons, new Comparator<Person>() {
-
-            @Override
             public int compare(Person o1, Person o2) {
                 return o1.getLastName().compareTo(o2.getLastName());
             }
@@ -50,6 +48,7 @@ public class Lambdas01 {
 
     @Test
     public void findFirstByName_foreach() {
+        //Initialize
         List<Person> persons = ImmutableList.of(
                 new Person("name 3", "lastName 3", 20),
                 new Person("name 1", "lastName 2", 40),
@@ -57,6 +56,7 @@ public class Lambdas01 {
                 new Person("name 1", "lastName 3", 40)
         );
 
+        //Code
         Person person = null;
         for (Person p : persons) {
             if ("name 1".equals(p.getFirstName())) {
@@ -69,8 +69,9 @@ public class Lambdas01 {
             person.print();
         }
 
+        //Asserts
         assertNotNull(person);
-        assertEquals(new Person("name 1", "lastName 2", 40), person);
+        assertEquals(new Person("name 1", "lastName 2", 40),person);
     }
 
     @Test
@@ -83,18 +84,16 @@ public class Lambdas01 {
 
         final Optional<Person> personOptional =
                 FluentIterable.from(persons)
-                              .firstMatch(new Predicate<Person>() {
-
-                                  @Override
-                                  public boolean apply(Person p) {
-                                        return "name 1".equals(p.getFirstName());
-                                    }
-                              });
+                        .firstMatch(new Predicate<Person>() {
+                            public boolean apply(Person p) {
+                                return "name 1".equals(p.getFirstName());
+                            }
+                        });
 
         if (personOptional.isPresent()) {
             personOptional.get().print();
             assertNotNull(personOptional.get());
-            assertEquals(new Person("name 1", "lastName 2", 40), personOptional.get());
+            assertEquals(new Person("name 1", "lastName 2", 40),personOptional.get());
         }
     }
 
