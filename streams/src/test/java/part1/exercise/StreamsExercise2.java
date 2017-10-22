@@ -228,11 +228,18 @@ public class StreamsExercise2 {
      */
     @Test
     public void greatestExperiencePerEmployer() {
-        Map<String, Person> result = null;// TODO
-        Stream<JobHistoryEntry> jobStream = getEmployees().stream().flatMap(employee->employee.getJobHistory().stream());
-        //List<JobHistoryEntry> jobList = jobStream.collect(Collectors.toList());
-        Map<String,Integer> jobs = jobStream.collect(Collectors.toMap(JobHistoryEntry::getEmployer,JobHistoryEntry::getDuration, Integer::compare));
+        Map<String, Person> result = // TODO
+                getEmployees().stream()
+                        .flatMap(employee -> employee.getJobHistory().stream()
+                                .map(job -> new PersonCompanyDurationPair(job.getEmployer(), employee.getPerson(),
+                                        job.getDuration())))
+                        .collect(Collectors.groupingBy(PersonCompanyDurationPair::getCompany,
+                                Collectors.collectingAndThen(
+                                        Collectors.maxBy(Comparator.comparingInt(PersonCompanyDurationPair::getDuration)), (x) -> x.get().getPerson())));
 
+       // List<PersonCompanyDurationPair> collect = personCompanyDurationPairStream.collect(Collectors.toList());
+        //personCompanyDurationPairStream.collect(Collectors.groupingBy(PersonCompanyDurationPair::getCompany,Collectors.mapping(PersonCompanyDurationPair::getPerson,Collectors.toList())));
+        //List<JobHistoryEntry> jobList = jobStream.collect(Collectors.toList());
 
         Map<String, Person> expected = new HashMap<>();
         expected.put("epam", new Person("John", "White", 28));
@@ -242,6 +249,29 @@ public class StreamsExercise2 {
         assertEquals(expected, result);
     }
 
+    private static class PersonCompanyDurationPair {
+        private final Person person;
+        private final String company;
+        private Integer duration;
+
+        public PersonCompanyDurationPair(String company, Person person, Integer duration) {
+            this.person = person;
+            this.company = company;
+            this.duration = duration;
+        }
+
+        public Person getPerson() {
+            return person;
+        }
+
+        public String getCompany() {
+            return company;
+        }
+
+        public Integer getDuration() {
+            return duration;
+        }
+    }
 
     private List<Employee> getEmployees() {
         return Arrays.asList(
