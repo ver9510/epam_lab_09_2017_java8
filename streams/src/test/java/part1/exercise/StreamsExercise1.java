@@ -108,7 +108,7 @@ public class StreamsExercise1 {
                                 new JobHistoryEntry(2, "dev", "google")
                         )));
 
-
+//часть сделана на занятии
         int result1 = employees.stream()
                 .flatMap(employee -> employee.getJobHistory().stream())
                 .filter(entry -> entry.getEmployer().equals("epam"))

@@ -71,25 +71,6 @@ public class StreamsExercise2 {
         List<Employee> employees = getEmployees();
 
         Map<String, Set<Person>> result = null; // TODO
-
-        /*
-        Map<String, Set<Person>> pairPersonCompany = new HashMap<>();
-        for (Employee employee : employees) {
-            List<JobHistoryEntry> jobs = employee.getJobHistory();
-            for (JobHistoryEntry entry : jobs) {
-                if (!pairPersonCompany.containsKey(entry.getEmployer())) {
-                    Set<Person> persons = new HashSet<>();
-                    persons.add(employee.getPerson());
-                    pairPersonCompany.put(entry.getEmployer(), persons);
-                } else {
-                    Set<Person> personSet = pairPersonCompany.get(entry.getEmployer());
-                    personSet.add(employee.getPerson());
-                    pairPersonCompany.put(entry.getEmployer(),personSet);
-                }
-            }
-        }
-        result = pairPersonCompany;*/
-
         Stream<PersonCompanyPair> pairPersonCompanyStream = employees
                 .stream()
                 .flatMap(employee -> employee.getJobHistory().stream()
@@ -228,10 +209,14 @@ public class StreamsExercise2 {
      */
     @Test
     public void greatestExperiencePerEmployer() {
-        Map<String, Person> result = null;// TODO
-        Stream<JobHistoryEntry> jobStream = getEmployees().stream().flatMap(employee->employee.getJobHistory().stream());
-        //List<JobHistoryEntry> jobList = jobStream.collect(Collectors.toList());
-        Map<String,Integer> jobs = jobStream.collect(Collectors.toMap(JobHistoryEntry::getEmployer,JobHistoryEntry::getDuration, Integer::compare));
+        Map<String, Person> result = // TODO
+                getEmployees().stream()
+                        .flatMap(employee -> employee.getJobHistory().stream()
+                                .map(job -> new PersonCompanyDurationPair(job.getEmployer(), employee.getPerson(),
+                                        job.getDuration())))
+                        .collect(Collectors.groupingBy(PersonCompanyDurationPair::getCompany,
+                                Collectors.collectingAndThen(
+                                        Collectors.maxBy(Comparator.comparingInt(PersonCompanyDurationPair::getDuration)), (x) -> x.get().getPerson())));
 
 
         Map<String, Person> expected = new HashMap<>();
@@ -242,6 +227,29 @@ public class StreamsExercise2 {
         assertEquals(expected, result);
     }
 
+    private static class PersonCompanyDurationPair {
+        private final Person person;
+        private final String company;
+        private Integer duration;
+
+        public PersonCompanyDurationPair(String company, Person person, Integer duration) {
+            this.person = person;
+            this.company = company;
+            this.duration = duration;
+        }
+
+        public Person getPerson() {
+            return person;
+        }
+
+        public String getCompany() {
+            return company;
+        }
+
+        public Integer getDuration() {
+            return duration;
+        }
+    }
 
     private List<Employee> getEmployees() {
         return Arrays.asList(
