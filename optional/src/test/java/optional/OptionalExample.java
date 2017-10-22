@@ -2,9 +2,12 @@ package optional;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
 
@@ -53,12 +56,40 @@ public class OptionalExample {
 
     @Test
     public void flatMap() {
-        throw new UnsupportedOperationException("Not implemented");
+        Optional<String> o1 = getOptional();
+
+        Function<String, Optional<List<Character>>> mapper = str->{
+            Optional<List<Character>> chars = Optional.of(new ArrayList<>());
+            str.chars().forEach(letter->chars.get().add((char) letter));
+            return chars;
+        };
+
+        Optional<List<Character>> actual = o1.flatMap(mapper);
+
+        Optional<List<Character>> expected;
+        if (o1.isPresent()) {
+            expected = mapper.apply(o1.get());
+        } else {
+            expected = Optional.empty();
+        }
+        assertEquals(expected, actual);
     }
 
     @Test
     public void filter() {
-        throw new UnsupportedOperationException("Not implemented");
+        Optional<String> o1 = getOptional();
+
+        Predicate<String> filter = str -> str.contains("employee");
+
+        Optional<String> actual = o1.filter(filter);
+
+        Optional<String> expected;
+        if (o1.isPresent()) {
+            expected = filter.test(o1.get())?o1:Optional.empty();
+        } else {
+            expected = Optional.empty();
+        }
+        assertEquals(expected, actual);;
     }
 
     private Optional<String> getOptional() {
