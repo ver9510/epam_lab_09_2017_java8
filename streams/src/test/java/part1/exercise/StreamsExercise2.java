@@ -212,8 +212,10 @@ public class StreamsExercise2 {
         Map<String, Person> result = // TODO
                 getEmployees().stream()
                         .flatMap(employee -> employee.getJobHistory().stream()
-                                .map(job -> new PersonCompanyDurationPair(job.getEmployer(), employee.getPerson(),
-                                        job.getDuration())))
+                                .collect(Collectors.groupingBy(JobHistoryEntry::getEmployer,Collectors.summingInt(JobHistoryEntry::getDuration)))
+                                .entrySet().stream()
+                                .map(job -> new PersonCompanyDurationPair(job.getKey(), employee.getPerson(),
+                                        job.getValue())))
                         .collect(Collectors.groupingBy(PersonCompanyDurationPair::getCompany,
                                 Collectors.collectingAndThen(
                                         Collectors.maxBy(Comparator.comparingInt(PersonCompanyDurationPair::getDuration)), (x) -> x.get().getPerson())));
