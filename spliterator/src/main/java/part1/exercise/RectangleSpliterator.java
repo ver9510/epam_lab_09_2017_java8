@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.IntConsumer;
+import java.util.stream.StreamSupport;
 
 public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
@@ -18,9 +19,9 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
 
     public RectangleSpliterator(int[][] array) {
         super(checkArrayAndCalcEstimatedSize(array), Spliterator.IMMUTABLE
-                          | Spliterator.SIZED
-                          | Spliterator.SUBSIZED
-                          | Spliterator.NONNULL);      // TODO заменить
+                | Spliterator.SIZED
+                | Spliterator.SUBSIZED
+                | Spliterator.NONNULL);      // TODO заменить
 //       super(estimatedSize, Spliterator.IMMUTABLE
 //                          | Spliterator.ORDERED
 //                          | Spliterator.SIZED
@@ -59,12 +60,15 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
         int midX;
         int midY;
         RectangleSpliterator result;
+        if (positionX == arrayLengthX) {
+            return null;
+        }
         if ((arrayLengthX - positionX) % 2 == 0) {
-            midX = (arrayLengthX - positionX) / 2;
+            midX = positionX + (arrayLengthX - positionX) / 2;
             result = new RectangleSpliterator(array, positionX, positionY, midX, arrayLengthY);
         } else {
-            midX = (arrayLengthX - positionX) / 2;
-            midY = (arrayLengthY - positionY) / 2;
+            midX = positionX + (arrayLengthX - positionX) / 2 + 1;
+            midY = positionY + (arrayLengthY - positionY) / 2;
             result = new RectangleSpliterator(array, positionX, positionY, midX, midY);
             positionY = midY;
         }
@@ -88,10 +92,10 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
     @Override
     public boolean tryAdvance(IntConsumer action) {
         // TODO
-        if (positionX < arrayLengthX && positionY < arrayLengthY) {
+        if (positionX < arrayLengthX - 1 || (positionX == arrayLengthX - 1 && positionY < arrayLengthY)) {
             int value = array[positionX][positionY];
             positionY++;
-            if (positionY == arrayLengthY) {
+            if (positionY == array[positionX].length) {
                 positionY = 0;
                 positionX++;
             }
@@ -99,6 +103,15 @@ public class RectangleSpliterator extends Spliterators.AbstractIntSpliterator {
             return true;
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        int[][] array = new int[][]{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}};
+        RectangleSpliterator spliterator = new RectangleSpliterator(array);
+
+        spliterator.tryAdvance((int value) -> System.out.println(value));
+        System.out.println("All stream");
+        spliterator.trySplit().trySplit().forEachRemaining((IntConsumer) System.out::println);
     }
 }
 
